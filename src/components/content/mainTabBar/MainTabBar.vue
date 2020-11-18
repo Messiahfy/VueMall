@@ -1,6 +1,5 @@
 <template>
     <div>
-        <router-view/>
         <tab-bar>
             <tab-bar-item path="/home" active-color="red">
                 <img slot="item-icon" src="~assets/images/tabbar/icon01.png" alt="">
