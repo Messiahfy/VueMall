@@ -6,15 +6,19 @@
         <home-swiper :banners="banners"></home-swiper>
         <home-recommend-view :recommends="recommends"></home-recommend-view>
         <feature-view></feature-view>
+        <tab-control :titles="['流行','新款','潮流']" class="tab-control"></tab-control>
     </div>
 </template>
 
 <script>
-    import NavBar from "components/common/navbar/NavBar";
     import {getHomeMultiData} from "../../network/home";
+
     import HomeSwiper from "./childComps/HomeSwiper";
     import HomeRecommendView from "./childComps/HomeRecommendView";
     import FeatureView from "./childComps/FeatureView";
+
+    import NavBar from "components/common/navbar/NavBar";
+    import TabControl from "components/content/tabControl/TabControl";
 
 
     export default {
@@ -23,7 +27,8 @@
             HomeSwiper,
             NavBar,
             HomeRecommendView,
-            FeatureView
+            FeatureView,
+            TabControl
         },
         data() {
             return {
@@ -53,5 +58,11 @@
         left: 0;
         top: 0;
         right: 0;
+    }
+
+    /*吸顶效果*/
+    .tab-control {
+        position: sticky;
+        top: 44px;
     }
 </style>
