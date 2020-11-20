@@ -3,7 +3,8 @@
         <nav-bar class="home-nav">
             <div slot="center">购物街</div>
         </nav-bar>
-        <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
+        <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-on-load="true"
+                @pullingUp="loadMore">
             <home-swiper :banners="banners"></home-swiper>
             <home-recommend-view :recommends="recommends"></home-recommend-view>
             <feature-view></feature-view>
@@ -77,9 +78,9 @@
             getHomeGoods(type,) {
                 const page = this.goods[type].page + 1
                 getHomeGoods(type, page).then(res => {
-                    console.log(res)
-                    // this.goods[type].list.push(...res.data.list)
-                    // this.goods[type].page += 1
+                    this.goods[type].list.push(...res.data.list)
+                    this.goods[type].page += 1
+                    this.$refs.scroll.finishPullUp()
                 })
             },
             tabClick(index) {
@@ -101,6 +102,9 @@
             contentScroll(position) {
                 // 滚到超过500像素，就显示滚到顶部的按钮
                 this.isShowBackTop = -position.y > 500
+            },
+            loadMore() {
+                this.getHomeGoods(this.currentType)
             }
         }
     }
