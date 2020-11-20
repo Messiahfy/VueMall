@@ -3,12 +3,14 @@
         <nav-bar class="home-nav">
             <div slot="center">购物街</div>
         </nav-bar>
+        <tab-control :titles="['流行','新款','潮流']" class="sticky-tab-control" @tabClick="tabClick" v-show="isTabFixed"
+                     ref="stickyTabControl"/>
         <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-on-load="true"
                 @pullingUp="loadMore">
-            <home-swiper :banners="banners"></home-swiper>
+            <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"></home-swiper>
             <home-recommend-view :recommends="recommends"></home-recommend-view>
             <feature-view></feature-view>
-            <tab-control :titles="['流行','新款','潮流']" class="tab-control" @tabClick="tabClick"/>
+            <tab-control :titles="['流行','新款','潮流']" @tabClick="tabClick" ref="tabControl"/>
             <goods-list :goods="showGoods"></goods-list>
         </scroll>
         <back-top @click.native="backClick" v-show="isShowBackTop"/>
@@ -51,7 +53,9 @@
                     'sell': {page: 0, list: []}
                 },
                 currentType: 'pop',
-                isShowBackTop: false
+                isShowBackTop: false,
+                tabOffsetTop: 0,
+                isTabFixed: false
             }
         },
         created() {
@@ -60,6 +64,9 @@
             this.getHomeGoods('pop')
             this.getHomeGoods('news')
             this.getHomeGoods('sell')
+        },
+        mounted() {
+            this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
         },
         computed: {
             showGoods() {
@@ -95,6 +102,8 @@
                         this.currentType = 'sell'
                         break
                 }
+                this.$refs.stickyTabControl.currentIndex = index
+                this.$refs.tabControl.currentIndex = index
             },
             backClick() {
                 this.$refs.scroll.scrollTo(0, 0)
@@ -102,9 +111,15 @@
             contentScroll(position) {
                 // 滚到超过500像素，就显示滚到顶部的按钮
                 this.isShowBackTop = -position.y > 500
+
+                // 滚动距离达到tab-control的位置，就让sticky-tab-control显示出来
+                this.isTabFixed = (-position.y) + this.$refs.scroll.$el.offsetTop > this.tabOffsetTop
             },
             loadMore() {
                 this.getHomeGoods(this.currentType)
+            },
+            swiperImageLoad() {
+                this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
             }
         }
     }
@@ -112,22 +127,19 @@
 
 <style scoped>
     #home {
-        padding-top: 44px;
     }
 
     .home-nav {
         background-color: var(--color-tint);
         color: white;
-        position: fixed;
-        left: 0;
-        top: 0;
-        right: 0;
     }
 
-    /*吸顶效果*/
-    .tab-control {
-        position: sticky;
+    .sticky-tab-control {
+        position: fixed;
         top: 44px;
+        left: 0;
+        right: 0;
+        z-index: 9;
     }
 
     /*视口总高度减去home的padding-top和底部导航栏的高度（或者使用绝对定位结合top和bottom）*/
