@@ -1,6 +1,6 @@
 <template>
     <div id="home">
-        <nav-bar class="home-nav">
+        <nav-bar class="home-nav" @click.native="$router.push('/detail/123')">
             <div slot="center">购物街</div>
         </nav-bar>
         <tab-control :titles="['流行','新款','潮流']" class="sticky-tab-control" @tabClick="tabClick" v-show="isTabFixed"
