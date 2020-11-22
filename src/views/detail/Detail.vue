@@ -13,6 +13,7 @@
     import DetailBaseInfo from "./childComps/DetailBaseInfo";
     import DetailBottomBar from "./childComps/DetailBottomBar";
     import {getDetail, Goods, Shop} from "../../network/detail";
+    import {ADD_TO_CART} from "../../store/mutaionsType";
 
     export default {
         name: "Detail",
@@ -50,6 +51,7 @@
                 product.iid = 1
 
                 // 存到vuex
+                this.$store.commit(ADD_TO_CART, product)
             }
         }
     }
